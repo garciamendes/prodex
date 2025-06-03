@@ -1,11 +1,13 @@
 import { CreateReviewDto } from './dto/create-review.dto';
+import { ResponseReviewDto } from './dto/response-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
-import { Review } from './schemas/review.schema';
 
 export interface ReviewInterface {
-  create: (data: CreateReviewDto) => Promise<Review>;
-  list: () => Promise<Review[]>;
-  get: (reviewId: string) => Promise<Review>;
-  update: (reviewId: string, data: UpdateReviewDto) => Promise<Review>;
-  delete: (reviewId: string) => Promise<Review>;
+  create: (data: CreateReviewDto) => Promise<ResponseReviewDto>;
+  get: (reviewId: string) => Promise<ResponseReviewDto>;
+  update: (
+    reviewId: string,
+    data: UpdateReviewDto,
+  ) => Promise<ResponseReviewDto>;
+  delete: (reviewId: string) => Promise<ResponseReviewDto>;
 }

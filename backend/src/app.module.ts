@@ -1,14 +1,16 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { env } from './env';
-import { ProductModule } from './product/product.module';
-import { ReviewModule } from './review/review.module';
+import { Product, ProductSchema } from './product/schemas/product.schema';
+import { Review, ReviewSchema } from './review/schemas/review.schema';
 
 @Module({
   imports: [
     MongooseModule.forRoot(env.DATABASE_URL),
-    ProductModule,
-    ReviewModule,
+    MongooseModule.forFeature([
+      { name: Product.name, schema: ProductSchema },
+      { name: Review.name, schema: ReviewSchema },
+    ]),
   ],
   controllers: [],
   providers: [],

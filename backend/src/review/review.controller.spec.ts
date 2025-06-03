@@ -33,7 +33,7 @@ describe('ReviewController', () => {
         _id: new Types.ObjectId(),
         author: 'Joe Doe 01',
         rating: 5,
-        productId: new Types.ObjectId().toString(),
+        product: new Types.ObjectId().toString(),
         comment: 'Anything',
       };
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
@@ -42,7 +42,7 @@ describe('ReviewController', () => {
       const data: CreateReviewDto = {
         author: 'Joe Doe 01',
         rating: 5,
-        productId: new Types.ObjectId().toString(),
+        product: new Types.ObjectId().toString(),
         comment: 'Anything',
       };
       const result = await controller.create(data);
@@ -53,42 +53,13 @@ describe('ReviewController', () => {
     });
   });
 
-  describe('List', () => {
-    it('should return an array of reviews', async () => {
-      const mockedReviews = [
-        {
-          _id: new Types.ObjectId(),
-          author: 'Joe Doe 02',
-          rating: 5,
-          productId: new Types.ObjectId().toString(),
-          comment: 'Anything',
-        },
-        {
-          _id: new Types.ObjectId(),
-          author: 'Joe Doe 02',
-          rating: 5,
-          productId: new Types.ObjectId().toString(),
-          comment: 'Anything',
-        },
-      ];
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-      service.list.mockResolvedValueOnce(mockedReviews as any);
-
-      const result = await controller.list();
-
-      expect(result).toEqual(mockedReviews);
-      // eslint-disable-next-line @typescript-eslint/unbound-method
-      expect(service.list).toHaveBeenCalled();
-    });
-  });
-
   describe('Get', () => {
     it('Should return a single review', async () => {
       const mockedReview = {
         _id: new Types.ObjectId(),
         author: 'Joe Doe 01',
         rating: 5,
-        productId: new Types.ObjectId().toString(),
+        product: new Types.ObjectId().toString(),
         comment: 'Anything',
       };
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
@@ -109,7 +80,7 @@ describe('ReviewController', () => {
         _id: new Types.ObjectId(),
         author: 'Joe Doe 01',
         rating: 5,
-        productId: new Types.ObjectId().toString(),
+        product: new Types.ObjectId().toString(),
         comment: 'Anything',
       };
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
@@ -133,7 +104,7 @@ describe('ReviewController', () => {
         _id: new Types.ObjectId(),
         author: 'Joe Doe 01',
         rating: 3.4,
-        productId: new Types.ObjectId().toString(),
+        product: new Types.ObjectId().toString(),
         comment: 'Anything',
       };
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument

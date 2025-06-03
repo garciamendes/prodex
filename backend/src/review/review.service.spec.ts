@@ -9,6 +9,7 @@ import { getModelToken } from '@nestjs/mongoose';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { toReviewResponse } from './adapters/review.adapter';
 
 describe('ReviewService', () => {
   let service: ReviewService;
@@ -33,21 +34,22 @@ describe('ReviewService', () => {
 
   describe('Create', () => {
     it('Should create a new review', async () => {
-      const mockedReview: CreateReviewDto = {
+      const mockedReview = {
         author: 'Joe Doe',
-        productId: new Types.ObjectId().toString(),
+        product: new Types.ObjectId().toString(),
         rating: 3.4,
       };
       model.create.mockResolvedValueOnce(mockedReview as any);
 
       const data: CreateReviewDto = {
         author: 'Joe Doe',
-        productId: new Types.ObjectId().toString(),
+        product: new Types.ObjectId().toString(),
         rating: 3.4,
       };
+
       const result = await service.create(data);
 
-      expect(result).toEqual(mockedReview);
+      expect(result).toEqual(toReviewResponse(mockedReview as any));
       expect(model.create).toHaveBeenCalledWith(data);
     });
 
@@ -64,37 +66,13 @@ describe('ReviewService', () => {
     });
   });
 
-  describe('List', () => {
-    it('Should return all reviews', async () => {
-      const mockedReviews = [
-        {
-          author: 'Joe Doe 1',
-          productId: new Types.ObjectId().toString(),
-          rating: 3.4,
-        },
-        {
-          author: 'Joe Doe 2',
-          productId: new Types.ObjectId().toString(),
-          rating: 5,
-        },
-      ];
-      model.find.mockReturnValueOnce({
-        exec: jest.fn().mockResolvedValueOnce(mockedReviews),
-      } as any);
-
-      const result = await service.list();
-
-      expect(result).toEqual(mockedReviews);
-      expect(model.find).toHaveBeenCalled();
-    });
-  });
-
   describe('Get', () => {
     it('Should return one review', async () => {
       const mockedReview = {
         author: 'Joe Doe 2',
-        productId: new Types.ObjectId().toString(),
+        product: new Types.ObjectId().toString(),
         rating: 4.5,
+        createdAt: new Date(),
       };
       model.findOne.mockReturnValueOnce({
         exec: jest.fn().mockResolvedValueOnce(mockedReview),
@@ -103,7 +81,7 @@ describe('ReviewService', () => {
       const reviewId = new Types.ObjectId().toString();
       const result = await service.get(reviewId);
 
-      expect(result).toEqual(mockedReview);
+      expect(result).toEqual(toReviewResponse(mockedReview as any));
       expect(model.findOne).toHaveBeenCalledWith({ _id: reviewId });
     });
 
@@ -122,23 +100,26 @@ describe('ReviewService', () => {
 
   describe('Update', () => {
     it('Should update a review', async () => {
-      const mockedReview: UpdateReviewDto = {
+      const mockedReview = {
+        author: 'Joe Doe 3',
+        product: new Types.ObjectId().toString(),
         rating: 4.5,
+        createdAt: new Date(),
       };
       model.findByIdAndUpdate.mockReturnValueOnce({
         exec: jest.fn().mockResolvedValueOnce(mockedReview),
       } as any);
 
       const reviewId = new Types.ObjectId().toString();
-      const updateProductDto: UpdateReviewDto = {
+      const updateReviewDto: UpdateReviewDto = {
         rating: 5,
       };
-      const result = await service.update(reviewId, updateProductDto);
+      const result = await service.update(reviewId, updateReviewDto);
 
-      expect(result).toEqual(mockedReview);
+      expect(result).toEqual(toReviewResponse(mockedReview as any));
       expect(model.findByIdAndUpdate).toHaveBeenCalledWith(
         reviewId,
-        updateProductDto,
+        updateReviewDto,
         { new: true },
       );
     });
@@ -166,8 +147,9 @@ describe('ReviewService', () => {
     it('Should delete a review', async () => {
       const mockedReview = {
         author: 'Joe Doe 2',
-        productId: new Types.ObjectId().toString(),
+        product: new Types.ObjectId().toString(),
         rating: 4.5,
+        createdAt: new Date(),
       };
       model.findByIdAndDelete.mockReturnValueOnce({
         exec: jest.fn().mockResolvedValueOnce(mockedReview),
@@ -176,7 +158,7 @@ describe('ReviewService', () => {
       const reviewId = new Types.ObjectId().toString();
       const result = await service.delete(reviewId);
 
-      expect(result).toEqual(mockedReview);
+      expect(result).toEqual(toReviewResponse(mockedReview as any));
       expect(model.findByIdAndDelete).toHaveBeenCalledWith(reviewId);
     });
 

@@ -9,6 +9,8 @@ import { UpdateReviewDto } from './dto/update-review.dto';
 import { Review } from './schemas/review.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { isValidObjectId, Model } from 'mongoose';
+import { ResponseReviewDto } from './dto/response-review.dto';
+import { toReviewResponse } from './adapters/review.adapter';
 
 @Injectable()
 export class ReviewService implements ReviewInterface {
@@ -16,30 +18,29 @@ export class ReviewService implements ReviewInterface {
     @InjectModel(Review.name) private readonly reviewModel: Model<Review>,
   ) {}
 
-  async create(data: CreateReviewDto): Promise<Review> {
+  async create(data: CreateReviewDto): Promise<ResponseReviewDto> {
     try {
       const review = await this.reviewModel.create(data);
-      return review;
+      return toReviewResponse(review);
     } catch (error) {
       throw new BadRequestException(error);
     }
   }
 
-  async list(): Promise<Review[]> {
-    return this.reviewModel.find().exec();
-  }
-
-  async get(reviewId: string): Promise<Review> {
+  async get(reviewId: string): Promise<ResponseReviewDto> {
     if (!isValidObjectId(reviewId)) throw new BadRequestException('Invalid ID');
 
     const review = await this.reviewModel.findOne({ _id: reviewId }).exec();
 
     if (!review) throw new NotFoundException('Review not found');
 
-    return review;
+    return toReviewResponse(review);
   }
 
-  async update(reviewId: string, data: UpdateReviewDto): Promise<Review> {
+  async update(
+    reviewId: string,
+    data: UpdateReviewDto,
+  ): Promise<ResponseReviewDto> {
     try {
       const review = await this.reviewModel
         .findByIdAndUpdate(reviewId, data, { new: true })
@@ -47,7 +48,7 @@ export class ReviewService implements ReviewInterface {
 
       if (!review) throw new NotFoundException('Review not found');
 
-      return review;
+      return toReviewResponse(review);
     } catch (error) {
       if (error instanceof NotFoundException) throw error;
 
@@ -55,7 +56,7 @@ export class ReviewService implements ReviewInterface {
     }
   }
 
-  async delete(reviewId: string): Promise<Review> {
+  async delete(reviewId: string): Promise<ResponseReviewDto> {
     try {
       if (!isValidObjectId(reviewId))
         throw new BadRequestException('Invalid ID');
@@ -64,7 +65,7 @@ export class ReviewService implements ReviewInterface {
 
       if (!review) throw new NotFoundException('Review not found');
 
-      return review;
+      return toReviewResponse(review);
     } catch (error) {
       if (error instanceof NotFoundException) throw error;
 

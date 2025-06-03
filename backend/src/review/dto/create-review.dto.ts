@@ -16,5 +16,5 @@ export class CreateReviewDto {
 
   @IsNotEmpty()
   @IsString()
-  productId: string;
+  product: string;
 }

@@ -9,27 +9,32 @@ import { isValidObjectId, Model } from 'mongoose';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductInterface } from './product.interface';
+import { Review } from '../review/schemas/review.schema';
+import { ResponseProductDto } from './dto/response-product.dto';
+import { toProductResponse } from './adapters/product.adapter';
 
 @Injectable()
 export class ProductService implements ProductInterface {
   constructor(
     @InjectModel(Product.name) private readonly productModel: Model<Product>,
+    @InjectModel(Review.name) private readonly reviewModel: Model<Review>,
   ) {}
 
-  async create(data: CreateProductDto): Promise<Product> {
+  async create(data: CreateProductDto): Promise<ResponseProductDto> {
     try {
       const product = await this.productModel.create(data);
-      return product;
+      return toProductResponse(product);
     } catch (error) {
       throw new BadRequestException(error);
     }
   }
 
-  async list(): Promise<Product[]> {
-    return this.productModel.find().exec();
+  async list(): Promise<ResponseProductDto[]> {
+    const products = await this.productModel.find().exec();
+    return products.map((product) => toProductResponse(product));
   }
 
-  async get(productId: string): Promise<Product> {
+  async get(productId: string): Promise<ResponseProductDto> {
     if (!isValidObjectId(productId))
       throw new BadRequestException('Invalid ID');
 
@@ -37,10 +42,19 @@ export class ProductService implements ProductInterface {
 
     if (!product) throw new NotFoundException('Product not found');
 
-    return product;
+    const reviews =
+      (await this.reviewModel
+        .find({ product: productId })
+        .select('-product')
+        .exec()) ?? [];
+
+    return toProductResponse(product, reviews);
   }
 
-  async update(productId: string, data: UpdateProductDto): Promise<Product> {
+  async update(
+    productId: string,
+    data: UpdateProductDto,
+  ): Promise<ResponseProductDto> {
     try {
       if (!isValidObjectId(productId))
         throw new BadRequestException('Invalid ID');
@@ -53,7 +67,7 @@ export class ProductService implements ProductInterface {
 
       if (!product) throw new NotFoundException('Product not found');
 
-      return product;
+      return toProductResponse(product);
     } catch (error) {
       if (error instanceof NotFoundException) throw error;
 
@@ -61,7 +75,7 @@ export class ProductService implements ProductInterface {
     }
   }
 
-  async delete(productId: string): Promise<Product> {
+  async delete(productId: string): Promise<ResponseProductDto> {
     try {
       if (!isValidObjectId(productId))
         throw new BadRequestException('Invalid ID');
@@ -72,7 +86,7 @@ export class ProductService implements ProductInterface {
 
       if (!product) throw new NotFoundException('Product not found');
 
-      return product;
+      return toProductResponse(product);
     } catch (error) {
       if (error instanceof NotFoundException) throw error;
 

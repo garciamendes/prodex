@@ -2,8 +2,10 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import { Product } from '../../product/schemas/product.schema';
 
+export type ReviewDocument = Review & Document;
+
 @Schema()
-export class Review extends Document {
+export class Review {
   @Prop({ required: true, index: 1 })
   author: string;
 
@@ -23,7 +25,7 @@ export class Review extends Document {
   rating: number;
 
   @Prop({ required: true, type: Types.ObjectId, ref: Product.name, index: 1 })
-  productId: Types.ObjectId;
+  product: Types.ObjectId;
 
   @Prop({ default: Date.now() })
   createdAt: Date;

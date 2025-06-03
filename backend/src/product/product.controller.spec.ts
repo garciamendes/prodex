@@ -85,6 +85,7 @@ describe('ProductController', () => {
         name: 'Product 01',
         price: 10.2,
         category: 'technology',
+        reviews: [],
       };
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       service.get.mockResolvedValueOnce(mockedProduct as any);

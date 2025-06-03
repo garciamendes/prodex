@@ -1,11 +1,16 @@
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { Product } from './schemas/product.schema';
+import { ResponseProductDto } from './dto/response-product.dto';
 
 export interface ProductInterface {
-  create: (data: CreateProductDto) => Promise<Product>;
-  list: () => Promise<Product[]>;
-  get: (productId: string) => Promise<Product>;
-  update: (productId: string, data: UpdateProductDto) => Promise<Product>;
-  delete: (productId: string) => Promise<Product>;
+  create: (
+    data: CreateProductDto,
+  ) => Promise<Omit<ResponseProductDto, 'reviews'>>;
+  list: () => Promise<Omit<ResponseProductDto, 'reviews'>[]>;
+  get: (productId: string) => Promise<ResponseProductDto>;
+  update: (
+    productId: string,
+    data: UpdateProductDto,
+  ) => Promise<Omit<ResponseProductDto, 'reviews'>>;
+  delete: (productId: string) => Promise<Omit<ResponseProductDto, 'reviews'>>;
 }
