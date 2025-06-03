@@ -5,10 +5,7 @@ import { Product } from './schemas/product.schema';
 export interface ProductInterface {
   create: (data: CreateProductDto) => Promise<Product>;
   list: () => Promise<Product[]>;
-  get: (productId: string) => Promise<Product | null>;
-  update: (
-    productId: string,
-    data: UpdateProductDto,
-  ) => Promise<Product | null>;
-  delete: (productId: string) => Promise<Product | null>;
+  get: (productId: string) => Promise<Product>;
+  update: (productId: string, data: UpdateProductDto) => Promise<Product>;
+  delete: (productId: string) => Promise<Product>;
 }

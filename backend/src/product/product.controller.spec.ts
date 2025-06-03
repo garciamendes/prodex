@@ -33,7 +33,7 @@ describe('ProductController', () => {
         _id: new Types.ObjectId(),
         name: 'Product 01',
         price: 10.2,
-        category: 'tecn',
+        category: 'technology',
       };
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       service.create.mockResolvedValueOnce(mockedProduct as any);
@@ -41,7 +41,7 @@ describe('ProductController', () => {
       const data: CreateProductDto = {
         name: 'Product 01',
         price: 10.2,
-        category: 'tecn',
+        category: 'technology',
       };
       const result = await controller.create(data);
 
@@ -58,13 +58,13 @@ describe('ProductController', () => {
           _id: new Types.ObjectId(),
           name: 'Product 01',
           price: 10.2,
-          category: 'tecn',
+          category: 'technology',
         },
         {
           _id: new Types.ObjectId(),
           name: 'Product 02',
           price: 10.2,
-          category: 'tecn',
+          category: 'technology',
         },
       ];
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
@@ -84,7 +84,7 @@ describe('ProductController', () => {
         _id: new Types.ObjectId(),
         name: 'Product 01',
         price: 10.2,
-        category: 'tecn',
+        category: 'technology',
       };
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       service.get.mockResolvedValueOnce(mockedProduct as any);
@@ -104,7 +104,7 @@ describe('ProductController', () => {
         _id: new Types.ObjectId(),
         name: 'Product 01 updated',
         price: 10.2,
-        category: 'tecn',
+        category: 'technology',
       };
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       service.update.mockResolvedValueOnce(mockedProduct as any);
@@ -113,7 +113,7 @@ describe('ProductController', () => {
       const data: UpdateProductDto = {
         name: 'Product 01 updated',
         price: 10.2,
-        category: 'tecn',
+        category: 'technology',
       };
       const result = await controller.update(productId, data);
 
@@ -129,7 +129,7 @@ describe('ProductController', () => {
         _id: new Types.ObjectId(),
         name: 'Product 01',
         price: 10.2,
-        category: 'tecn',
+        category: 'technology',
       };
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       service.delete.mockResolvedValueOnce(mockedProduct as any);

@@ -5,7 +5,7 @@ import { Review } from './schemas/review.schema';
 export interface ReviewInterface {
   create: (data: CreateReviewDto) => Promise<Review>;
   list: () => Promise<Review[]>;
-  get: (reviewId: string) => Promise<Review | null>;
-  update: (reviewId: string, data: UpdateReviewDto) => Promise<Review | null>;
-  delete: (reviewId: string) => Promise<Review | null>;
+  get: (reviewId: string) => Promise<Review>;
+  update: (reviewId: string, data: UpdateReviewDto) => Promise<Review>;
+  delete: (reviewId: string) => Promise<Review>;
 }

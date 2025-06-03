@@ -1,7 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Product } from './schemas/product.schema';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { isValidObjectId, Model } from 'mongoose';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductInterface } from './product.interface';
@@ -13,31 +17,66 @@ export class ProductService implements ProductInterface {
   ) {}
 
   async create(data: CreateProductDto): Promise<Product> {
-    const product = await this.productModel.create(data);
-    return product;
+    try {
+      const product = await this.productModel.create(data);
+      return product;
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 
   async list(): Promise<Product[]> {
     return this.productModel.find().exec();
   }
 
-  async get(productId: string) {
-    return this.productModel.findOne({ _id: productId }).exec();
+  async get(productId: string): Promise<Product> {
+    if (!isValidObjectId(productId))
+      throw new BadRequestException('Invalid ID');
+
+    const product = await this.productModel.findOne({ _id: productId }).exec();
+
+    if (!product) throw new NotFoundException('Product not found');
+
+    return product;
   }
 
-  async update(productId: string, data: UpdateProductDto) {
-    return this.productModel
-      .findByIdAndUpdate({ _id: productId }, data, {
-        new: true,
-      })
-      .exec();
+  async update(productId: string, data: UpdateProductDto): Promise<Product> {
+    try {
+      if (!isValidObjectId(productId))
+        throw new BadRequestException('Invalid ID');
+
+      const product = await this.productModel
+        .findByIdAndUpdate(productId, data, {
+          new: true,
+        })
+        .exec();
+
+      if (!product) throw new NotFoundException('Product not found');
+
+      return product;
+    } catch (error) {
+      if (error instanceof NotFoundException) throw error;
+
+      throw new BadRequestException(error);
+    }
   }
 
-  async delete(productId: string) {
-    const deletedProduct = await this.productModel
-      .findByIdAndDelete(productId)
-      .exec();
+  async delete(productId: string): Promise<Product> {
+    try {
+      if (!isValidObjectId(productId))
+        throw new BadRequestException('Invalid ID');
 
-    return deletedProduct;
+      const product = await this.productModel
+        .findByIdAndDelete(productId)
+        .exec();
+
+      if (!product) throw new NotFoundException('Product not found');
+
+      return product;
+    } catch (error) {
+      if (error instanceof NotFoundException) throw error;
+
+      throw new BadRequestException(error);
+    }
   }
 }
