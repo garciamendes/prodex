@@ -10,5 +10,6 @@ import { ReviewController } from './review.controller';
   ],
   providers: [ReviewService],
   controllers: [ReviewController],
+  exports: [MongooseModule, ReviewService],
 })
 export class ReviewModule {}

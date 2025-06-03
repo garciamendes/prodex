@@ -1,11 +1,11 @@
 import { toReviewResponse } from '../../review/adapters/review.adapter';
 import { ResponseProductDto } from '../dto/response-product.dto';
-import { ProductDocument } from '../schemas/product.schema';
-import { ReviewDocument } from '../../review/schemas/review.schema';
+import { Product } from '../schemas/product.schema';
+import { Review } from '../../review/schemas/review.schema';
 
 export const toProductResponse = (
-  product: ProductDocument,
-  reviews: ReviewDocument[] = [],
+  product: Product,
+  reviews: Review[] = [],
 ): ResponseProductDto => {
   return new ResponseProductDto({
     id: product._id as string,

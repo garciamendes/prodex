@@ -1,7 +1,7 @@
 import { ResponseReviewDto } from '../dto/response-review.dto';
-import { ReviewDocument } from '../schemas/review.schema';
+import { Review } from '../schemas/review.schema';
 
-export const toReviewResponse = (review: ReviewDocument): ResponseReviewDto => {
+export const toReviewResponse = (review: Review): ResponseReviewDto => {
   return new ResponseReviewDto({
     id: review._id as string,
     author: review.author,

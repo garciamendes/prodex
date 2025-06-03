@@ -2,10 +2,8 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import { Product } from '../../product/schemas/product.schema';
 
-export type ReviewDocument = Review & Document;
-
 @Schema()
-export class Review {
+export class Review extends Document {
   @Prop({ required: true, index: 1 })
   author: string;
 
