@@ -1,152 +1,145 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { ProductController } from './product.controller';
+import { DeepMockProxy, mockDeep } from 'jest-mock-extended';
 import { ProductService } from './product.service';
-import { Model, Types } from 'mongoose';
-import { Product } from './schemas/product.schema';
-import { getModelToken } from '@nestjs/mongoose';
+import { Types } from 'mongoose';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { DeepMockProxy, mockDeep } from 'jest-mock-extended';
 
-describe('ProductService', () => {
-  let service: ProductService;
-  let model: DeepMockProxy<Model<Product>>;
+describe('ProductController', () => {
+  let controller: ProductController;
+  let service: DeepMockProxy<ProductService>;
 
   beforeEach(async () => {
-    const modelMock = mockDeep<Model<Product>>();
+    const serviceMock = mockDeep<ProductService>();
 
     const module: TestingModule = await Test.createTestingModule({
+      controllers: [ProductController],
       providers: [
-        ProductService,
         {
-          provide: getModelToken('Product'),
-          useValue: modelMock,
+          provide: ProductService,
+          useValue: serviceMock,
         },
       ],
     }).compile();
 
-    service = module.get<ProductService>(ProductService);
-    model = module.get(getModelToken('Product'));
+    controller = module.get<ProductController>(ProductController);
+    service = module.get<DeepMockProxy<ProductService>>(ProductService);
   });
 
   describe('Create', () => {
-    it('Should insert a new product', async () => {
-      const mockedProduct: CreateProductDto = {
+    it('Should create a new product', async () => {
+      const mockedProduct = {
+        _id: new Types.ObjectId(),
         name: 'Product 01',
         price: 10.2,
         category: 'tecn',
       };
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-      model.create.mockResolvedValueOnce(mockedProduct as any);
+      service.create.mockResolvedValueOnce(mockedProduct as any);
 
-      const createProductDto = {
+      const data: CreateProductDto = {
         name: 'Product 01',
         price: 10.2,
         category: 'tecn',
       };
-      const result = await service.create(createProductDto);
+      const result = await controller.create(data);
 
       expect(result).toEqual(mockedProduct);
       // eslint-disable-next-line @typescript-eslint/unbound-method
-      expect(model.create).toHaveBeenCalledWith(createProductDto);
+      expect(service.create).toHaveBeenCalledWith(data);
     });
   });
 
   describe('List', () => {
-    it('Should return all products', async () => {
+    it('should return an array of products', async () => {
       const mockedProducts = [
         {
+          _id: new Types.ObjectId(),
           name: 'Product 01',
           price: 10.2,
           category: 'tecn',
         },
         {
+          _id: new Types.ObjectId(),
           name: 'Product 02',
           price: 10.2,
           category: 'tecn',
         },
       ];
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-      model.find.mockReturnValueOnce({
-        exec: jest.fn().mockResolvedValueOnce(mockedProducts),
-      } as any);
+      service.list.mockResolvedValueOnce(mockedProducts as any);
 
-      const result = await service.list();
+      const result = await controller.list();
 
       expect(result).toEqual(mockedProducts);
       // eslint-disable-next-line @typescript-eslint/unbound-method
-      expect(model.find).toHaveBeenCalled();
+      expect(service.list).toHaveBeenCalled();
     });
   });
 
   describe('Get', () => {
-    it('Should return one product', async () => {
+    it('Should return a single product', async () => {
       const mockedProduct = {
+        _id: new Types.ObjectId(),
         name: 'Product 01',
         price: 10.2,
         category: 'tecn',
       };
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-      model.findOne.mockReturnValueOnce({
-        exec: jest.fn().mockResolvedValueOnce(mockedProduct),
-      } as any);
+      service.get.mockResolvedValueOnce(mockedProduct as any);
 
       const productId = new Types.ObjectId().toString();
-      const result = await service.get(productId);
+      const result = await controller.get(productId);
 
       expect(result).toEqual(mockedProduct);
       // eslint-disable-next-line @typescript-eslint/unbound-method
-      expect(model.findOne).toHaveBeenCalled();
+      expect(service.get).toHaveBeenCalledWith(productId);
     });
   });
 
   describe('Update', () => {
-    it('Should update a product', async () => {
+    it('Should update a single product', async () => {
       const mockedProduct = {
-        name: 'Product 01',
+        _id: new Types.ObjectId(),
+        name: 'Product 01 updated',
         price: 10.2,
         category: 'tecn',
       };
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-      model.findByIdAndUpdate.mockReturnValueOnce({
-        exec: jest.fn().mockResolvedValueOnce(mockedProduct),
-      } as any);
+      service.update.mockResolvedValueOnce(mockedProduct as any);
 
       const productId = new Types.ObjectId().toString();
-      const updateProductDto: UpdateProductDto = {
-        name: 'Product 01',
+      const data: UpdateProductDto = {
+        name: 'Product 01 updated',
         price: 10.2,
         category: 'tecn',
       };
-      const result = await service.update(productId, updateProductDto);
+      const result = await controller.update(productId, data);
 
       expect(result).toEqual(mockedProduct);
       // eslint-disable-next-line @typescript-eslint/unbound-method
-      expect(model.findByIdAndUpdate).toHaveBeenCalledWith(
-        { _id: productId },
-        updateProductDto,
-        { new: true },
-      );
+      expect(service.update).toHaveBeenCalledWith(productId, data);
     });
   });
 
   describe('Delete', () => {
-    it('Should delete a product', async () => {
+    it('Should delete a single product', async () => {
       const mockedProduct = {
+        _id: new Types.ObjectId(),
         name: 'Product 01',
         price: 10.2,
         category: 'tecn',
       };
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-      model.findByIdAndDelete.mockReturnValueOnce({
-        exec: jest.fn().mockResolvedValueOnce(mockedProduct),
-      } as any);
+      service.delete.mockResolvedValueOnce(mockedProduct as any);
 
       const productId = new Types.ObjectId().toString();
-      const result = await service.delete(productId);
+      const result = await controller.delete(productId);
 
       expect(result).toEqual(mockedProduct);
       // eslint-disable-next-line @typescript-eslint/unbound-method
-      expect(model.findByIdAndDelete).toHaveBeenCalledWith(productId);
+      expect(service.delete).toHaveBeenCalledWith(productId);
     });
   });
 });
