@@ -5,7 +5,11 @@ import { ProductModule } from './product/product.module';
 import { ReviewModule } from './review/review.module';
 
 @Module({
-  imports: [MongooseModule.forRoot(env.DATABASE_URL), ProductModule, ReviewModule],
+  imports: [
+    MongooseModule.forRoot(env.DATABASE_URL),
+    ProductModule,
+    ReviewModule,
+  ],
   controllers: [],
   providers: [],
 })
