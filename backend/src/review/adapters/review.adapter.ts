@@ -7,6 +7,7 @@ export const toReviewResponse = (review: Review): ResponseReviewDto => {
     author: review.author,
     comment: review.comment,
     rating: review.rating,
+    product: String(review.product),
     createdAt: review.createdAt,
   });
 };

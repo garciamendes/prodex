@@ -15,7 +15,7 @@ export class Product extends Document {
   @Prop({ required: true })
   category: string;
 
-  @Prop({ default: Date.now() })
+  @Prop({ default: Date.now })
   createdAt: Date;
 }
 
