@@ -5,7 +5,7 @@ export const SideMenu = () => {
   const location = useLocation()
 
   return (
-    <div className="h-full min-w-[230px] bg-gray-700 rounded-xl py-10">
+    <div className="h-full hidden lg:flex min-w-[230px] bg-gray-700 rounded-xl py-10">
       <ul className="w-max flex flex-col mx-auto gap-6">
         {LINKS.map(({ icon: Icon, title, url }, index) => {
           const activeRouter = matchPath(url, location.pathname)

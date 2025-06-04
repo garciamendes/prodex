@@ -72,7 +72,7 @@ export const ProductDetail = ({ productId, onClose }: ProductDetailProps) => {
             {product?.name || '---'}
           </SheetTitle>
 
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col md:flex-row md:items-center justify-between">
             <strong className="text-gray-100 text-2xl">{format(product?.price || 0)}</strong>
             <Rating rating={3.6} quantityReviews={30} />
           </div>
@@ -132,7 +132,7 @@ export const ProductDetail = ({ productId, onClose }: ProductDetailProps) => {
 
   return (
     <Sheet open={!!productId}>
-      <SheetContent className="bg-gray-800 border-gray-800 text-gray-100 !max-w-[560px] p-4 flex flex-col h-full">
+      <SheetContent className="bg-gray-800 border-gray-800 text-gray-100 !min-w-full md:!min-w-[560px] p-4 flex flex-col h-full">
         <div
           onClick={handlerOnClonse}
           className="flex w-full justify-end cursor-pointer opacity-70 transition-opacity hover:opacity-100">

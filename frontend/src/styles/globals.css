@@ -220,20 +220,6 @@
   }
 }
 
-@layer utilities {
-  .scrollbar::-webkit-scrollbar {
-    width: 10px;
-  }
-
-  .scrollbar::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  .scrollbar::-webkit-scrollbar-thumb {
-    @apply bg-gray-700 rounded-[30px];
-  }
-}
-
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }

@@ -108,12 +108,13 @@ export const ProductUpdate = ({ productId, onRefresh, onClose }: ProductCreatePr
       <>
         <div className="flex flex-col gap-6 rounded-[10px] bg-gray-700 p-3 shrink-0">
           <div className="grid w-full items-center gap-3">
-            <Label htmlFor="name">Nome do produto</Label>
+            <Label htmlFor="name" className="text-gray-100">Nome do produto</Label>
             <Input
               id='name'
               name='name'
               placeholder="Teclado"
               value={form.name}
+              className="placeholder:text-gray-400"
               onChange={onChange} />
           </div>
 
@@ -129,7 +130,7 @@ export const ProductUpdate = ({ productId, onRefresh, onClose }: ProductCreatePr
               value={form.price}
               onChange={onChange}
               placeholder="120.30"
-              className="text-gray-100 !text-2xl placeholder:text-xl placeholder:text-gray-300 border-0 focus-visible:ring-0"
+              className="text-gray-100 !text-2xl placeholder:text-xl placeholder:text-gray-400 border-0 focus-visible:ring-0"
               customInput={Input}
             />
           </div>
@@ -142,6 +143,7 @@ export const ProductUpdate = ({ productId, onRefresh, onClose }: ProductCreatePr
               id='category'
               name='category'
               placeholder="Periférico"
+              className="placeholder:text-gray-400"
               value={form.category}
               onChange={onChange} />
           </div>
@@ -151,6 +153,7 @@ export const ProductUpdate = ({ productId, onRefresh, onClose }: ProductCreatePr
             <Textarea
               id='description'
               name='description'
+              className="placeholder:text-gray-400"
               value={form.description}
               placeholder="Teclado RGB..."
               onChange={onChange} />
@@ -163,7 +166,7 @@ export const ProductUpdate = ({ productId, onRefresh, onClose }: ProductCreatePr
   return (
     <Sheet open={!!productId}>
       <SheetContent
-        className="bg-gray-800 border-gray-800 text-gray-100 !max-w-[560px] p-4 flex flex-col h-full">
+        className="bg-gray-800 border-gray-800 text-gray-100 !min-w-full md:!min-w-[560px] p-4 flex flex-col h-full">
         <div
           onClick={handlerOnClose}
           className="flex w-full justify-end opacity-70 transition-opacity hover:opacity-100">
@@ -189,7 +192,7 @@ export const ProductUpdate = ({ productId, onRefresh, onClose }: ProductCreatePr
             disabled={isLoadingUpdate}
             onClick={handlerCreateProduct}
             className="bg-gray-700 hover:bg-gray-700 cursor-pointer border border-gray-700 hover:opacity-80">
-            {isLoadingUpdate ? <Loader2Icon className="animate-spin" /> : 'Criar Produto'}
+            {isLoadingUpdate ? <Loader2Icon className="animate-spin" /> : 'Atualizar Produto'}
           </Button>
         </div>
       </SheetContent>

@@ -83,7 +83,7 @@ export const ProductCreate = ({ openSideCreateProduct, onRefresh, onClose }: Pro
   return (
     <Sheet open={openSideCreateProduct}>
       <SheetContent
-        className="bg-gray-800 border-gray-800 text-gray-100 !max-w-[560px] p-4 flex flex-col h-full">
+        className="bg-gray-800 border-gray-800 text-gray-100 !min-w-full lg:!min-w-[560px] p-4 flex flex-col h-full">
         <div
           onClick={handlerOnClonse}
           className="flex w-full justify-end opacity-70 transition-opacity hover:opacity-100">
@@ -99,6 +99,7 @@ export const ProductCreate = ({ openSideCreateProduct, onRefresh, onClose }: Pro
                 id='name'
                 name='name'
                 placeholder="Teclado"
+                className="placeholder:text-gray-400"
                 value={form.name}
                 onChange={onChange} />
             </div>
@@ -115,7 +116,7 @@ export const ProductCreate = ({ openSideCreateProduct, onRefresh, onClose }: Pro
                 value={form.price}
                 onChange={onChange}
                 placeholder="0.00"
-                className="text-gray-100 !text-2xl placeholder:text-xl placeholder:text-gray-300 border-0 focus-visible:ring-0"
+                className="text-gray-100 !text-2xl placeholder:text-xl placeholder:text-gray-400 border-0 focus-visible:ring-0"
                 customInput={Input}
               />
             </div>
@@ -128,6 +129,7 @@ export const ProductCreate = ({ openSideCreateProduct, onRefresh, onClose }: Pro
                 id='category'
                 name='category'
                 placeholder="Periférico"
+                className="placeholder:text-gray-400"
                 value={form.category}
                 onChange={onChange} />
             </div>
@@ -138,6 +140,7 @@ export const ProductCreate = ({ openSideCreateProduct, onRefresh, onClose }: Pro
                 id='description'
                 name='description'
                 placeholder="Teclado RGB..."
+                className="placeholder:text-gray-400"
                 value={form.description}
                 onChange={onChange} />
             </div>
