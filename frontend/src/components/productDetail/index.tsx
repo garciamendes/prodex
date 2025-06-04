@@ -3,12 +3,6 @@ import {
   SheetContent,
   SheetTitle,
 } from "@/components/ui/sheet"
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion"
 import NoImg from '@/assets/images/no-image.svg'
 import { format } from "@/lib/utils"
 import { Rating } from "../ui/rating"
@@ -18,6 +12,7 @@ import { Loading } from "../ui/loading"
 import { XIcon } from "lucide-react"
 import type { Product } from "@/hooks/useProduct/types"
 import { useProduct } from "@/hooks/useProduct"
+import { CreateReview } from "./createReview"
 
 export interface ProductDetailProps {
   productId: string | null
@@ -26,19 +21,22 @@ export interface ProductDetailProps {
 export const ProductDetail = ({ productId, onClose }: ProductDetailProps) => {
   const [product, setProduct] = useState<Product | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [enabledToCreateReview, setEnabledToCreateReview] = useState(false)
 
   const { get } = useProduct()
 
   useEffect(() => {
     if (!productId) return
 
-    fetchProducts(productId)
+    fetchProduct()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [productId])
 
-  const fetchProducts = async (product: string) => {
+  const fetchProduct = async () => {
+    if (!productId) return
+
     setIsLoading(true)
-    const result = await get(product)
+    const result = await get(productId)
     setIsLoading(false)
     setProduct(result)
   }
@@ -46,6 +44,28 @@ export const ProductDetail = ({ productId, onClose }: ProductDetailProps) => {
   const handlerOnClonse = () => {
     setProduct(null)
     onClose?.()
+  }
+
+  const renderReviews = () => {
+    if (!product?.reviews?.length) {
+      return (
+        <div className="w-full flex items-center justify-center">
+          <span className="text-gray-500 text-base mt-2">Nenhuma avaliação</span>
+        </div>
+      )
+    }
+
+    return (
+      product?.reviews.map((review, index) => (
+        <Review
+          key={index}
+          author={review.author}
+          comment={review.comment}
+          rating={review.rating}
+          createAt={review.createdAt}
+        />
+      ))
+    )
   }
 
   const renderProduct = () => {
@@ -63,68 +83,74 @@ export const ProductDetail = ({ productId, onClose }: ProductDetailProps) => {
 
     return (
       <>
-        <div className="flex flex-col gap-6 rounded-[10px] bg-gray-700 p-3 shrink-0">
+        <div className="flex flex-col justify-between gap-6 rounded-[10px] bg-gray-700 p-3 min-h-[400px]">
           <div className="flex justify-center items-center w-full">
             <img src={NoImg} alt="No image" className='h-32 object-cover' />
           </div>
 
-          <SheetTitle className="text-gray-100">
-            {product?.name || '---'}
-          </SheetTitle>
+          <div className="flex flex-col">
+            <SheetTitle className="text-gray-100">
+              {product?.name || '---'}
+            </SheetTitle>
 
-          <div className="flex flex-col md:flex-row md:items-center justify-between">
-            <strong className="text-gray-100 text-2xl">{format(product?.price || 0)}</strong>
-            <Rating rating={3.6} quantityReviews={30} />
+            <div className="flex flex-col md:flex-row md:items-center justify-between">
+              <strong className="text-gray-100 text-2xl">{format(product?.price || 0)}</strong>
+              <Rating rating={3.6} quantityReviews={30} />
+            </div>
           </div>
         </div>
 
-        <div className="flex-1 min-h-0 flex flex-col overflow-hidden">
-          <Accordion type="single" collapsible className="shrink-0">
-            <AccordionItem value="description">
-              <AccordionTrigger className="cursor-pointer hover:no-underline text-gray-300 hover:text-gray-100 duration-300">
-                Descrição
-              </AccordionTrigger>
-              <AccordionContent className="text-gray-300 text-sm">
-                {product?.description || '---'}
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
+        <div className="h-[calc(100%-400px)] w-full flex flex-col">
+          <div className="flex flex-col max-h-[150px]">
+            <strong className="text-gray-300">
+              Descrição
+            </strong>
 
-          <Accordion type="single" collapsible className="flex-1 flex flex-col overflow-hidden">
-            <AccordionItem value="reviews" className="border-none flex flex-col h-full">
-              <AccordionTrigger className="cursor-pointer hover:no-underline text-gray-300 hover:text-gray-100 duration-300 py-3">
-                <div className="flex flex-1 justify-between items-center">
-                  <span>Avaliações</span>
-                  <button
-                    onClick={(event) => {
-                      event.stopPropagation()
-                      alert('Avaliar')
-                    }}
-                    className="text-gray-100 hover:text-white font-medium"
-                  >
-                    Avaliar
-                  </button>
-                </div>
-              </AccordionTrigger>
+            <p className="text-gray-300 text-sm w-full no-scrollbar overflow-auto">
+              {product?.description || '---'}
+            </p>
+          </div>
 
-              <AccordionContent className="flex-1 min-h-0 overflow-hidden">
-                <div
-                  className="h-[calc(180px*2.8)] overflow-y-auto pb-4 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800 no-scrollbar">
-                  <div className="flex flex-col gap-4">
-                    {product?.reviews.map((review, index) => (
-                      <Review
-                        key={index}
-                        author={review.author}
-                        comment={review.comment}
-                        rating={review.rating}
-                        createAt={review.createdAt}
-                      />
-                    ))}
-                  </div>
+          <div className="flex flex-col min-h-[calc(100%-(400px-150px))]">
+            <strong className="text-gray-300 hover:text-gray-100 duration-300 py-3">
+              <div className="flex flex-1 justify-between items-center">
+                <strong className="text-gray-300">
+                  Avaliações
+                </strong>
+
+                <button
+                  onClick={(event) => {
+                    event.stopPropagation()
+                    setEnabledToCreateReview(true)
+                  }}
+                  className="text-gray-100 hover:text-white cursor-pointer font-medium"
+                >
+                  Avaliar
+                </button>
+              </div>
+            </strong>
+
+            <div className="flex-1 overflow-hidden pb-10">
+              <div
+                className="flex-1 h-full overflow-y-auto pb-4 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800 no-scrollbar">
+                <div className="flex flex-col gap-4">
+                  {enabledToCreateReview && (
+                    <CreateReview
+                      product={productId!}
+                      enabledToCreate={enabledToCreateReview}
+                      onClose={() => setEnabledToCreateReview(false)}
+                      onRefresh={() => {
+                        setEnabledToCreateReview(false)
+                        fetchProduct()
+                      }}
+                    />
+                  )}
+
+                  {renderReviews()}
                 </div>
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
+              </div>
+            </div>
+          </div>
         </div>
       </>
     )

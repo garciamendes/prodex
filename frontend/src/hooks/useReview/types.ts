@@ -5,3 +5,12 @@ export interface Review {
   rating: number;
   createdAt: Date;
 }
+
+export interface ICreateReview {
+  comment?: string;
+  rating: number;
+  author: string;
+  product: string;
+}
+export type UpdateReview = Partial<Pick<ICreateReview, 'rating' | 'comment'>>
+

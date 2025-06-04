@@ -27,7 +27,7 @@ export type RequireFields = keyof Omit<CreateProduct, 'description'>
 export const ProductCreate = ({ openSideCreateProduct, onRefresh, onClose }: ProductCreateProps) => {
   const { create } = useProduct()
   const [form, setForm] = useState<CreateProduct>({
-    name: 'Teclado', category: 'Periférico', price: 340.50, description: 'Teclado RGB'
+    name: '', category: '', price: null, description: ''
   })
   const [isLoading, setIsLoading] = useState(false)
   const requiredFields: RequireFields[] = ['name', 'price', 'category']
