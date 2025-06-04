@@ -25,7 +25,7 @@ export class Review extends Document {
   @Prop({ required: true, type: Types.ObjectId, ref: Product.name, index: 1 })
   product: Types.ObjectId;
 
-  @Prop({ default: Date.now() })
+  @Prop({ default: Date.now })
   createdAt: Date;
 }
 
