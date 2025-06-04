@@ -6,10 +6,5 @@ export const LINKS: LinksPorps[] = [
     icon: BinocularsIcon,
     title: "Explorar",
     url: "/",
-  },
-  {
-    icon: SlidersHorizontalIcon,
-    title: "Admin",
-    url: "/admin",
-  },
+  }
 ];

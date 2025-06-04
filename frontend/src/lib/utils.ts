@@ -26,3 +26,20 @@ export const format = (value: number, options?: FormatOptionsProps) => {
     currency: 'BRL'
   }).format(value);
 }
+
+export function formatMoneyFromInput(value: string, options?: FormatOptionsProps) {
+  const digitsOnly = value.replace(/\D/g, '')
+  const numeric = Number(digitsOnly)
+
+  return format(numeric, options) ?? ''
+}
+
+export function parseFormattedMoney(value: string): number {
+  const normalized = value
+    .replace(/\s/g, '')
+    .replace('R$', '')
+    .replace(/\./g, '')
+    .replace(',', '.')
+
+  return parseFloat(normalized)
+}

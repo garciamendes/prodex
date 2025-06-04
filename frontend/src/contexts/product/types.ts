@@ -12,7 +12,7 @@ export interface Product {
 
 export interface CreateProduct {
   name: string;
-  price: number;
+  price: number | null;
   category: string;
   description?: string;
 }
