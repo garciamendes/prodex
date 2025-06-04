@@ -4,27 +4,48 @@ import { Input } from "../ui/input"
 import { Label } from "../ui/label"
 import { RatingStars } from "../ui/ratingStars"
 import { Textarea } from "../ui/textarea"
-import { useState, type ChangeEvent } from "react"
+import { useEffect, useState, type ChangeEvent } from "react"
 import { useReview } from "@/hooks/useReview"
 import type { ICreateReview } from "@/hooks/useReview/types"
-import { ERROS_MESSAGES } from "./constants"
 import { toast } from "sonner"
 
-interface CreateReviewProps {
-  enabledToCreate: boolean
+interface UpdateReviewProps {
+  enabledEdit: boolean
+  review: string
   product: string
   onClose?: () => void
   onRefresh?: () => void
 }
 export type RequireFields = keyof Omit<ICreateReview, 'comment'>
 
-export const CreateReview = ({ product, enabledToCreate, onClose, onRefresh }: CreateReviewProps) => {
-  const { create } = useReview()
+export const UpdateReview = ({ enabledEdit, review, product, onClose, onRefresh }: UpdateReviewProps) => {
+  const { update, get } = useReview()
   const [form, setForm] = useState<ICreateReview>({
     author: '', product: product, rating: 0, comment: ''
   })
   const [isLoading, setIsLoading] = useState(false)
   const requiredFields: RequireFields[] = ['author', 'product', 'rating']
+
+  useEffect(() => {
+    if (!review && enabledEdit) return
+
+    fetchReview()
+  }, [review])
+
+  const fetchReview = async () => {
+    if (!review && enabledEdit) return
+
+    const result = await get(review)
+    
+    if (!result) return
+
+    setForm({
+      author: result.author,
+      product: result.product,
+      rating: result.rating,
+      comment: result.comment
+    })
+  }
 
   const onChange = (event: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>) => {
     const { name, value } = event.target
@@ -47,23 +68,16 @@ export const CreateReview = ({ product, enabledToCreate, onClose, onRefresh }: C
   }
 
   const handlerCreateReview = async () => {
-    if (!enabledToCreate) return 
+    if (!review) return
     const errors = validate()
 
     if (errors.length) {
-      if (requiredFields.length === errors.length) {
-        toast.error('Erro ao tentar criar, recarregue a página')
-      } else {
-        errors.forEach((key) => {
-          toast.error(ERROS_MESSAGES[key])
-        })
-      }
-
+      toast.error('Os campos "Autor, Nota" não podem ser vázios')
       return
     }
 
     setIsLoading(true)
-    await create(form, onRefresh)
+    await update(review, form, onRefresh)
     handlerOnClonse()
   }
 

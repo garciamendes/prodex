@@ -3,6 +3,7 @@ export interface Review {
   author: string;
   comment: string;
   rating: number;
+  product: string;
   createdAt: Date;
 }
 

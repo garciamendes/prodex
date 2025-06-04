@@ -5,7 +5,6 @@ import {
 } from "@/components/ui/sheet"
 import NoImg from '@/assets/images/no-image.svg'
 import { format } from "@/lib/utils"
-import { Rating } from "../ui/rating"
 import { Review } from "../ui/review"
 import { useEffect, useState } from "react"
 import { Loading } from "../ui/loading"
@@ -59,10 +58,13 @@ export const ProductDetail = ({ productId, onClose }: ProductDetailProps) => {
       product?.reviews.map((review, index) => (
         <Review
           key={index}
+          id={review.id}
           author={review.author}
           comment={review.comment}
           rating={review.rating}
           createAt={review.createdAt}
+          product={review.product}
+          onRefresh={fetchProduct}
         />
       ))
     )
@@ -95,7 +97,7 @@ export const ProductDetail = ({ productId, onClose }: ProductDetailProps) => {
 
             <div className="flex flex-col md:flex-row md:items-center justify-between">
               <strong className="text-gray-100 text-2xl">{format(product?.price || 0)}</strong>
-              <Rating rating={3.6} quantityReviews={30} />
+              {/* <Rating rating={3.6} quantityReviews={30} /> */}
             </div>
           </div>
         </div>
@@ -111,7 +113,7 @@ export const ProductDetail = ({ productId, onClose }: ProductDetailProps) => {
             </p>
           </div>
 
-          <div className="flex flex-col min-h-[calc(100%-(400px-150px))]">
+          <div className="flex flex-col lg:min-h-[calc(100%-(400px-150px))]">
             <strong className="text-gray-300 hover:text-gray-100 duration-300 py-3">
               <div className="flex flex-1 justify-between items-center">
                 <strong className="text-gray-300">
@@ -158,7 +160,7 @@ export const ProductDetail = ({ productId, onClose }: ProductDetailProps) => {
 
   return (
     <Sheet open={!!productId}>
-      <SheetContent className="bg-gray-800 border-gray-800 text-gray-100 !min-w-full md:!min-w-[560px] p-4 flex flex-col h-full">
+      <SheetContent className="bg-gray-800 border-gray-800 text-gray-100 !min-w-full md:!min-w-[560px] p-4 flex flex-col h-full overflow-auto no-scrollbar">
         <div
           onClick={handlerOnClonse}
           className="flex w-full justify-end cursor-pointer opacity-70 transition-opacity hover:opacity-100">

@@ -43,11 +43,11 @@ export const Card = ({ id, title, price, rating, quantityReviews, className, onE
         <div className="flex flex-col flex-1 gap-2">
           <strong className="text-gray-100 text-2xl">{format(price)}</strong>
 
-          <Rating rating={rating} quantityReviews={quantityReviews} />
+          {/* <Rating rating={rating} quantityReviews={quantityReviews} /> */}
         </div>
       </div>
 
-      <div className='opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex gap-5 justify-end'>
+      <div className='opacity-100 lg:opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex gap-5 justify-end'>
         <Tooltip>
           <TooltipTrigger className='cursor-pointer'>
             <Trash

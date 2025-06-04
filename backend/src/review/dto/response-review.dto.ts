@@ -3,6 +3,7 @@ export class ResponseReviewDto {
   author: string;
   comment: string;
   rating: number;
+  product?: string;
   createdAt: Date;
 
   constructor(partial: Partial<ResponseReviewDto>) {
