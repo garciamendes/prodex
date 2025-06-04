@@ -13,11 +13,11 @@ import NoImg from '@/assets/images/no-image.svg'
 import { format } from "@/lib/utils"
 import { Rating } from "../ui/rating"
 import { Review } from "../ui/review"
-import { useProduct } from "@/hooks/product"
-import type { Product } from "@/contexts/product/types"
 import { useEffect, useState } from "react"
 import { Loading } from "../ui/loading"
 import { XIcon } from "lucide-react"
+import type { Product } from "@/hooks/useProduct/types"
+import { useProduct } from "@/hooks/useProduct"
 
 export interface ProductDetailProps {
   productId: string | null

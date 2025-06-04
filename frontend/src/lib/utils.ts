@@ -35,7 +35,7 @@ export function formatMoneyFromInput(value: string, options?: FormatOptionsProps
 }
 
 export function parseFormattedMoney(value: string): number {
-  const normalized = value
+  const normalized = String(value)
     .replace(/\s/g, '')
     .replace('R$', '')
     .replace(/\./g, '')

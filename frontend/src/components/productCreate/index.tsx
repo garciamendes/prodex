@@ -6,24 +6,30 @@ import { XIcon } from "@phosphor-icons/react"
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
 import { useState, type ChangeEvent } from "react"
-import type { CreateProduct } from "@/contexts/product/types"
 import { NumericFormat } from 'react-number-format'
 import { Textarea } from "../ui/textarea"
 import { Button } from "../ui/button"
 import { toast } from "sonner"
 import { ERROS_MESSAGES } from "./constants"
+import type { CreateProduct } from "@/hooks/useProduct/types"
+import { useProduct } from "@/hooks/useProduct"
+import { Loader2Icon } from "lucide-react"
+import { parseFormattedMoney } from "@/lib/utils"
 
 export interface ProductCreateProps {
   openSideCreateProduct: boolean
+  onRefresh?: () => {}
   onClose?: () => void
 }
 
 export type RequireFields = keyof Omit<CreateProduct, 'description'>
 
-export const ProductCreate = ({ openSideCreateProduct, onClose }: ProductCreateProps) => {
+export const ProductCreate = ({ openSideCreateProduct, onRefresh, onClose }: ProductCreateProps) => {
+  const { create } = useProduct()
   const [form, setForm] = useState<CreateProduct>({
-    name: '', category: '', price: null, description: ''
+    name: 'Teclado', category: 'Periférico', price: 340.50, description: 'Teclado RGB'
   })
+  const [isLoading, setIsLoading] = useState(false)
   const requiredFields: RequireFields[] = ['name', 'price', 'category']
 
   const onChange = (event: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>) => {
@@ -39,19 +45,19 @@ export const ProductCreate = ({ openSideCreateProduct, onClose }: ProductCreateP
     const errors: RequireFields[] = []
 
     Object.entries(form).forEach(([key, value]) => {
-      if (requiredFields.includes(key as RequireFields) && (!value.trim() || !value))
+      if (requiredFields.includes(key as RequireFields) && ((typeof value === 'string' && !value.trim()) || !value))
         errors.push(key as RequireFields)
     })
 
     return errors
   }
 
-  const handlerCreateProduct = () => {
+  const handlerCreateProduct = async () => {
     const errors = validate()
 
     if (errors.length) {
       if (requiredFields.length === errors.length) {
-        toast.error('Os campos "Name, Preço e Categoria" são obrigatórios')
+        toast.error('Os campos "Nome, Preço e Categoria" são obrigatórios')
       } else {
         errors.forEach((key) => {
           toast.error(ERROS_MESSAGES[key])
@@ -60,9 +66,14 @@ export const ProductCreate = ({ openSideCreateProduct, onClose }: ProductCreateP
 
       return
     }
+
+    setIsLoading(true)
+    await create({ ...form, price: parseFormattedMoney(String(form.price))}, onRefresh)
+    handlerOnClonse()
   }
 
   const handlerOnClonse = () => {
+    setIsLoading(false)
     setForm({
       name: '', category: '', price: null, description: ''
     })
@@ -88,6 +99,7 @@ export const ProductCreate = ({ openSideCreateProduct, onClose }: ProductCreateP
                 id='name'
                 name='name'
                 placeholder="Teclado"
+                value={form.name}
                 onChange={onChange} />
             </div>
 
@@ -102,7 +114,7 @@ export const ProductCreate = ({ openSideCreateProduct, onClose }: ProductCreateP
                 name="price"
                 value={form.price}
                 onChange={onChange}
-                placeholder="120.30"
+                placeholder="0.00"
                 className="text-gray-100 !text-2xl placeholder:text-xl placeholder:text-gray-300 border-0 focus-visible:ring-0"
                 customInput={Input}
               />
@@ -116,6 +128,7 @@ export const ProductCreate = ({ openSideCreateProduct, onClose }: ProductCreateP
                 id='category'
                 name='category'
                 placeholder="Periférico"
+                value={form.category}
                 onChange={onChange} />
             </div>
 
@@ -125,6 +138,7 @@ export const ProductCreate = ({ openSideCreateProduct, onClose }: ProductCreateP
                 id='description'
                 name='description'
                 placeholder="Teclado RGB..."
+                value={form.description}
                 onChange={onChange} />
             </div>
           </div>
@@ -143,8 +157,9 @@ export const ProductCreate = ({ openSideCreateProduct, onClose }: ProductCreateP
             variant='default'
             size='sm'
             onClick={handlerCreateProduct}
+            disabled={isLoading}
             className="bg-gray-700 hover:bg-gray-700 cursor-pointer border border-gray-700 hover:opacity-80">
-            Criar Produto
+            {isLoading ? <Loader2Icon className="animate-spin" /> : "Criar Produto"}
           </Button>
         </div>
       </SheetContent>

@@ -1,10 +1,12 @@
 import { ProductCreate } from "@/components/productCreate"
+import { ProductDelete } from "@/components/productDelete"
 import { ProductDetail } from "@/components/productDetail"
+import { ProductUpdate } from "@/components/productUpdate"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Loading } from "@/components/ui/loading"
-import type { Product } from "@/contexts/product/types"
-import { useProduct } from "@/hooks/product"
+import { useProduct } from "@/hooks/useProduct"
+import type { Product } from "@/hooks/useProduct/types"
 import { BinocularsIcon } from "@phosphor-icons/react"
 import { Plus } from "lucide-react"
 import { useEffect, useState } from "react"
@@ -14,6 +16,8 @@ export const Explore = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [openCreateProduct, setOpenCreateProduct] = useState(false)
   const [productId, setProductId] = useState<string | null>(null)
+  const [productToDelete, setProductToDelete] = useState<string | null>(null)
+  const [productToEdit, setProductToEdit] = useState<string | null>(null)
   const { list } = useProduct()
 
   useEffect(() => {
@@ -36,39 +40,60 @@ export const Explore = () => {
 
     if (!products.length) {
       return (
-        <div className="w-full flex items-center justify-center">
+        <div className="w-full flex justify-center">
           <span className="text-gray-500 text-2xl mt-2">Nenhum produto encontrado</span>
         </div>
       )
     }
 
     return (
-      products.map((product, index) => {
-        return (
-          <Card
-            key={index}
-            id={product.id}
-            title={product.name}
-            price={product.price}
-            rating={1}
-            quantityReviews={1}
-            onClick={(id: string) => {
-              if (id === productId) return
+      <div className="grid grid-cols-6 gap-6">
+        {products.map((product, index) => {
+          return (
+            <Card
+              key={index}
+              id={product.id}
+              title={product.name}
+              price={product.price}
+              rating={1}
+              quantityReviews={1}
+              onDelete={(id: string) => setProductToDelete(id)}
+              onEdit={(id: string) => setProductToEdit(id)}
+              onDetail={(id: string) => {
+                if (id === productId) return
 
-              setProductId(id)
-            }}
-          />
-        )
-      })
+                setProductId(id)
+              }}
+            />
+          )
+        })}
+      </div>
     )
   }
 
   return (
-    <div className="flex flex-col flex-1">
-      <ProductDetail onClose={() => setProductId(null)} productId={productId} />
+    <div className="flex flex-col h-full">
+      <ProductDetail
+        onClose={() => setProductId(null)}
+        productId={productId} />
       <ProductCreate
+        onRefresh={fetchProducts}
         openSideCreateProduct={openCreateProduct}
         onClose={() => setOpenCreateProduct(false)} />
+      <ProductUpdate
+        productId={productToEdit}
+        onClose={() => setProductToEdit(null)}
+        onRefresh={() => {
+          setProductToEdit(null)
+          fetchProducts()
+        }} />
+      <ProductDelete
+        productToDelete={productToDelete}
+        onCancel={() => setProductToDelete(null)}
+        onRefresh={() => {
+          setProductToDelete(null)
+          fetchProducts()
+        }} />
 
       <div className="flex w-full justify-between">
         <div className="flex items-center gap-6">
@@ -85,7 +110,7 @@ export const Explore = () => {
         </div>
       </div>
 
-      <div className="flex flex-wrap h-full overflow-auto">
+      <div className="relative flex h-full overflow-auto mt-6 scrollbar z-0">
         {renderProducts()}
       </div>
     </div>

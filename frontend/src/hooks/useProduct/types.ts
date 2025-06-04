@@ -1,4 +1,4 @@
-import type { Review } from "../review/types";
+import type { Review } from "../useReview/types";
 
 export interface Product {
   id: string;

@@ -1,17 +1,15 @@
 import { RouterProvider } from "react-router"
 import { routes } from "./routes"
 import { Toaster } from "./components/ui/sonner"
-import { ProductProvider } from "./contexts/product"
 
 function App() {
   return (
     <>
       <Toaster
         richColors
+        expand
       />
-      <ProductProvider>
-        <RouterProvider router={routes} />
-      </ProductProvider>
+      <RouterProvider router={routes} />
     </>
   )
 }

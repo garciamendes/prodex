@@ -1,8 +1,13 @@
 import NoImg from '@/assets/images/no-image.svg'
 import { Truncate } from './truncate';
-import { format } from '@/lib/utils';
+import { cn, format } from '@/lib/utils';
 import { Rating } from './rating';
-
+import { SquarePen, Trash } from 'lucide-react';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 export interface CardProps {
   id: string
@@ -10,14 +15,20 @@ export interface CardProps {
   price: number
   quantityReviews: number
   rating: number
-  onClick: (productId: string) => void
+  className?: string
+  onEdit: (productId: string) => void
+  onDelete: (productId: string) => void
+  onDetail: (productId: string) => void
 }
 
-export const Card = ({ id, title, price, rating, quantityReviews, onClick }: CardProps) => {
+export const Card = ({ id, title, price, rating, quantityReviews, className, onEdit, onDelete, onDetail }: CardProps) => {
   return (
     <div
-      className="group cursor-pointer flex flex-col w-[240px] h-[350px] rounded-xl py-4 px-5 gap-5 bg-gray-700"
-      onClick={() => onClick(id)}>
+      className={cn(
+        "group cursor-pointer flex flex-col w-[240px] h-[350px] rounded-xl py-4 px-5 gap-5 bg-gray-700",
+        className
+      )}
+      onClick={() => onDetail(id)}>
       <div className="flex justify-center items-center w-full">
         <img src={NoImg} alt="No image" className='h-32 object-cover' />
       </div>
@@ -34,6 +45,38 @@ export const Card = ({ id, title, price, rating, quantityReviews, onClick }: Car
 
           <Rating rating={rating} quantityReviews={quantityReviews} />
         </div>
+      </div>
+
+      <div className='opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex gap-5 justify-end'>
+        <Tooltip>
+          <TooltipTrigger className='cursor-pointer'>
+            <Trash
+              className='stroke-gray-200'
+              onClick={(event) => {
+                event.stopPropagation()
+                onDelete(id)
+              }}
+              size={27} />
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Deletar produto</p>
+          </TooltipContent>
+        </Tooltip>
+
+        <Tooltip>
+          <TooltipTrigger className='cursor-pointer'>
+            <SquarePen
+              className='stroke-gray-200'
+              onClick={(event) => {
+                event.stopPropagation()
+                onEdit(id)
+              }}
+              size={27} />
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Editar produto</p>
+          </TooltipContent>
+        </Tooltip>
       </div>
     </div>
   )
